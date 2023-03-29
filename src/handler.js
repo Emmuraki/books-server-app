@@ -70,11 +70,42 @@ const addBookhand = (request, h) => {
 };
 
 const allgetBook = (request, h) => {
+    const { name, reading, finished } = request.query;
     const books = allbook.map((b) => ({
         id: b.id,
         name: b.name,
         publisher: b.publisher,
     }));
+
+    if (name !== undefined && name !== '') {
+        const response = h.response({
+            status: 'success',
+            data: {
+                name,
+            },
+        });
+        response.code(202);
+        return response;
+    } else if (reading !== undefined && reading !== '') {
+        const response = h.response({
+            status: 'success',
+            data: {
+                reading,
+            },
+        });
+        response.code(202);
+        return response;
+    } else if (finished !== undefined && finished !== '') {
+        const response = h.response({
+            status: 'success',
+            data: {
+                finished,
+            },
+        });
+        response.code(202);
+        return response;
+    }
+
 
     const response = h.response({
         'status': 'success',
