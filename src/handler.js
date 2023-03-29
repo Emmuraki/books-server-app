@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const books = require('./books');
+const allbook = require('./books');
 
 const addBookhand = (request, h) => {
     const {
@@ -52,9 +52,9 @@ const addBookhand = (request, h) => {
         return response;
     }
 
-    books.push(createBook);
+    allbook.push(createBook);
 
-    const success = books.filter((iBook) => iBook.id === id).length > 0;
+    const success = allbook.filter((iBook) => iBook.id === id).length > 0;
     if (success) {
         const response = h.response({
             'status': `success`,
@@ -69,17 +69,27 @@ const addBookhand = (request, h) => {
     }
 };
 
-const allgetBook = () => ({
-    'status': 'success',
-    'data': {
-        books,
-    },
-});
+const allgetBook = (request, h) => {
+    const books = allbook.map((b) => ({
+        id: b.id,
+        name: b.name,
+        publisher: b.publisher,
+    }));
+
+    const response = h.response({
+        'status': 'success',
+        'data': {
+            books,
+        },
+    });
+    response.code(200);
+    return response;
+};
 
 const getbookId = (request, h) => {
     const { id } = request.params;
 
-    const book = books.filter((n) => n.id === id)[0];
+    const book = allbook.filter((n) => n.id === id)[0];
 
     if (book !== undefined) {
         return {
@@ -111,12 +121,12 @@ const editBookbyid = (request, h) => {
         reading,
     } = request.payload;
     const updatedAt = new Date().toDateString();
-    const indBook = books.findIndex((indeBox) => indeBox.id === id);
-    const idBook = books.filter((n) => n.id === id)[0];
+    const indBook = allbook.findIndex((indeBox) => indeBox.id === id);
+    const idBook = allbook.filter((n) => n.id === id)[0];
     if (idBook !== undefined) {
         if (indBook !== -1) {
-            books[indBook] = {
-                ...books[indBook],
+            allbook[indBook] = {
+                ...allbook[indBook],
                 name,
                 year,
                 author,
@@ -128,7 +138,7 @@ const editBookbyid = (request, h) => {
                 updatedAt,
             };
 
-            if (books[indBook].name === undefined) {
+            if (allbook[indBook].name === undefined) {
                 const response = h.response({
                     'status': 'fail',
                     'message': 'Gagal memperbarui buku. Mohon isi nama buku',
@@ -136,7 +146,7 @@ const editBookbyid = (request, h) => {
 
                 response.code(400);
                 return response;
-            } else if (books[indBook].readPage > books[indBook].pageCount) {
+            } else if (allbook[indBook].readPage > allbook[indBook].pageCount) {
                 const response = h.response({
                     'status': 'fail',
                     // eslint-disable-next-line max-len
@@ -166,10 +176,10 @@ const editBookbyid = (request, h) => {
 
 const delbookByid = (request, h) => {
     const { id } = request.params;
-    const indBook = books.findIndex((indeBox) => indeBox.id === id);
+    const indBook = allbook.findIndex((indeBox) => indeBox.id === id);
 
     if (indBook !== -1) {
-        books.splice(indBook, 1);
+        allbook.splice(indBook, 1);
         const response = h.response({
             'status': 'success',
             'message': 'Buku berhasil dihapus',
