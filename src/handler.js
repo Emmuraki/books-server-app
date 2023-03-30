@@ -77,32 +77,65 @@ const allgetBook = (request, h) => {
         publisher: b.publisher,
     }));
 
+
     if (name !== undefined && name !== '') {
+        const books = allbook.filter((b) => b.name.toLowerCase().includes(name.toLowerCase()))
+            .map((b) => ({
+                id: b.id,
+                name: b.name,
+                publisher: b.publisher,
+            }));
+        if (books.length !== 0) {
+            return {
+                status: 'success',
+                data: { books },
+            };
+        }
         const response = h.response({
-            status: 'success',
-            data: {
-                name,
-            },
+            status: 'fail',
+            message: 'Buku tidak ditemukan',
         });
-        response.code(202);
+        response.code(404);
         return response;
     } else if (reading !== undefined && reading !== '') {
+        const nReading = reading == 1;
+        const books = allbook.filter((b) => b.reading == nReading)
+            .map((b) => ({
+                id: b.id,
+                name: b.name,
+                publisher: b.publisher,
+            }));
+        if (books.length !== 0) {
+            return {
+                status: 'success',
+                data: { books },
+            };
+        }
         const response = h.response({
-            status: 'success',
-            data: {
-                reading,
-            },
+            status: 'fail',
+            message: 'Buku tidak ditemukan',
         });
-        response.code(202);
+        response.code(404);
         return response;
     } else if (finished !== undefined && finished !== '') {
+        const nFinish = finished == 1;
+        const books = allbook.filter((b) => b.finished == nFinish)
+            .map((b) => ({
+                id: b.id,
+                name: b.name,
+                publisher: b.publisher,
+            }));
+        if (books.length !== 0) {
+            return {
+                status: 'success',
+                data: { books },
+            };
+        }
         const response = h.response({
-            status: 'success',
-            data: {
-                finished,
-            },
+            status: 'fail',
+            message: 'Buku tidak ditemukan',
         });
-        response.code(202);
+        response.code(404);
         return response;
     }
 
